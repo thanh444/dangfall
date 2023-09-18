@@ -1,0 +1,57 @@
+type Animal {
+    id: ID!
+    name: String!
+    createdAt: Time
+    updatedAt: Time
+}
+
+enum AnimalOrderField {
+    NAME
+    CREATED_AT
+    UPDATED_AT
+}
+
+
+input AnimalOrder {
+    direction: OrderDirection!
+    field: AnimalOrderField
+}
+
+type AnimalConnection{
+    edges: [AnimalEdge]
+    pageInfo: PageInfo!
+    totalCount:Int!
+}
+
+type AnimalEdge{
+    node: Animal
+    cursor: Cursor!
+}
+
+
+input AnimalFilterInput {
+    name: String
+    pagination: PaginationInput!
+    order: AnimalOrder
+}
+
+input CreateAnimalInput{
+    name:String!
+}
+
+
+type AnimalOps {
+    create(input: CreateAnimalInput!): Animal! @goField(forceResolver: true)
+}
+
+type AnimalQueries {
+    list(filter: AnimalFilterInput): AnimalConnection! @goField(forceResolver: true)
+}
+
+extend type Mutation {
+    animal: AnimalOps! @goField(forceResolver: true)
+}
+
+extend type Query {
+    animal: AnimalQueries! @goField(forceResolver: true)
+}

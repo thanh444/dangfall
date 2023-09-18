@@ -1,0 +1,54 @@
+type User {
+    id: ID!
+    name: String!
+    createdAt: Time
+    updatedAt: Time
+}
+
+enum UserOrderField {
+    NAME
+    CREATED_AT
+    UPDATED_AT
+}
+
+input UserOrder {
+    direction: OrderDirection!
+    field: UserOrderField
+}
+
+type UserConnection {
+    edges: [UserEdge]
+    pageInfo: PageInfo!
+    totalCount: Int!
+}
+
+type UserEdge {
+    node: User
+    cursor: Cursor!
+}
+
+input UserFilterInput {
+    name: String
+    pagination: PaginationInput!
+    order: UserOrder
+}
+
+input CreateUserInput {
+    name: String!
+}
+
+type UserOps {
+    create(input: CreateUserInput!): User! @goField(forceResolver: true)
+}
+
+type UserQueries {
+    list(filter: UserFilterInput): UserConnection! @goField(forceResolver: true)
+}
+
+extend type Mutation {
+    user: UserOps! @goField(forceResolver: true)
+}
+
+extend type Query {
+    user: UserQueries! @goField(forceResolver: true)
+}
